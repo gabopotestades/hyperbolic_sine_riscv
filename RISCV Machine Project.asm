@@ -111,7 +111,7 @@ sw t6, (t3)
 #------------DATA------------#
 
 .data
-x: .double 3.33  #<--------------- Input x here
+x: .double 4.5345  #<--------------- Input x here
 n: .word 0
 
 exponent: .word 0
