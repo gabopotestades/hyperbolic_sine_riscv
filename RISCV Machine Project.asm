@@ -26,6 +26,12 @@ li a7, 3
 ecall
 .end_macro
 
+.macro PRINT_STRING (%s) # Print a string in the command line
+la a0, %s
+li a7, 4
+ecall
+.end_macro
+
 .macro COMPUTE_EXPONENT (%n, %exponent)
   li t1,  2
   la t2,  %n
@@ -105,7 +111,7 @@ sw t6, (t3)
 #------------DATA------------#
 
 .data
-x: .double 3  #<--------------- Input x here
+x: .double 3.33  #<--------------- Input x here
 n: .word 0
 
 exponent: .word 0
@@ -115,34 +121,42 @@ ans_per_loop: .double 0
 
 total: .double 0
 
+function_name: .asciz "Hyperbolic Sine Function"
+value_of_n: .asciz "Value when n is "
+colon: .asciz ": "
+final_ans: .asciz "Final answer: "
+
 #------------PROGRAM------------#
 .text
 main:
+
+PRINT_STRING(function_name)
+NEWLINE
 
 #This is the main loop
 SUMMATION:
 
 # Multiply exponent first
 COMPUTE_EXPONENT(n, exponent)
-#PRINT_INT(exponent)
-#NEWLINE
 
 # Get the dividend
 COMPUTE_DIVIDEND(x, exponent, dividend)
-#PRINT_FLOAT(dividend)
-#NEWLINE
 
 # Get the divisor
 COMPUTE_DIVISOR(exponent, divisor)
-#PRINT_FLOAT(divisor)
-#NEWLINE
 
 # Divide the two
 DIVIDE(dividend, divisor, ans_per_loop)
-#PRINT_FLOAT(ans_per_loop)
-#NEWLINE
+
+#Print the value each loop
+PRINT_STRING(value_of_n)
+PRINT_INT(n)
+PRINT_STRING(colon)
+PRINT_FLOAT(ans_per_loop)
+NEWLINE
 
 ADD_TOTAL_AND_INCREMENT_N(ans_per_loop, total, n)
+
 
 la t0, n
 lw t1, (t0)
@@ -151,5 +165,6 @@ beq t1, t2, END_SUMMATION
 bne t1, t2, SUMMATION
 
 END_SUMMATION:
+PRINT_STRING(final_ans)
 PRINT_FLOAT(total)
 EXIT
